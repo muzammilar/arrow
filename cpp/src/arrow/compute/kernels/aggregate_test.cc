@@ -3695,8 +3695,8 @@ TEST_F(TestSkewKurtosis, Options) {
     AssertSkewKurtosisAre(type, {"[0, 1]", "[]", "[null, 2]"}, options, 0.0, -1.5);
     options.biased = false;
     AssertSkewKurtosisInvalid(type, "[0, 1]", options);
-    AssertSkewKurtosisAre(type, {"[1, 2, 3]", "[40, null]"}, options, 1.9889477403978211,
-                          3.9631931024230695);
+    AssertSkewKurtosisAre(type, {"[1, 2, 3]", "[40]", "[null]"}, options,
+                          1.9889477403978211, 3.9631931024230695);
     options.biased = true;
     options.min_count = 3;
     AssertSkewKurtosisAre(type, "[0, 1, null, 2]", options, 0.0, -1.5);
@@ -4263,7 +4263,8 @@ TEST(TestQuantileKernel, Decimal) {
     ValidateOutput(*out_array);
     AssertArraysEqual(*expected, *out_array, /*verbose=*/true);
   };
-  for (const auto& ty : {decimal128(3, 2), decimal256(3, 2)}) {
+  for (const auto& ty :
+       {decimal32(3, 2), decimal64(3, 2), decimal128(3, 2), decimal256(3, 2)}) {
     check(ArrayFromJSON(ty, R"(["1.00", "5.00", null])"),
           QuantileOptions(0.5, QuantileOptions::LINEAR),
           ArrayFromJSON(float64(), R"([3.00])"));
